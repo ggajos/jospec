@@ -1,0 +1,5 @@
+/topright-jospec
+*.iws
+*.ipr
+*.iml
+**/target
