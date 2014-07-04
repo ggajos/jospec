@@ -3,20 +3,22 @@ package com.opentangerine.jospec.model;
 import com.opentangerine.jospec.Jospec;
 import com.opentangerine.jospec.annotation.J;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class FeatureModel implements Jospec.Feature {
+public class JospecModel implements Jospec {
+    private Jospec.Level level;
     private String name;
     private String purpose;
     private Collection<String> notes = new ArrayList<>();
-    private Collection<Jospec.Attribute> attributes = new ArrayList<>();
-    private Collection<Jospec.Feature> features = new ArrayList<>();
+    private Collection<Jospec> specs = new ArrayList<>();
     private Collection<String> tags = new ArrayList<>();
+    private Collection<Constraint> constraints = new ArrayList<>();
     private Map<String, Object> properties = new HashMap<>();
     private Object done;
+
+    public JospecModel(String name) {
+        this.name = name;
+    }
 
     public String getActor() {
         return actor;
@@ -30,20 +32,23 @@ public class FeatureModel implements Jospec.Feature {
         return properties;
     }
 
-    public Collection<String> getTags() {
-        return tags;
-    }
-
-    public Collection<Jospec.Feature> getFeatures() {
-        return features;
-    }
-
-    public Collection<Jospec.Attribute> getAttributes() {
-        return attributes;
+    public Collection<Jospec> getSpecs() {
+        return specs;
     }
 
     public Collection<String> getNotes() {
         return notes;
+    }
+
+    @Override
+    public Jospec level(Jospec.Level level) {
+        this.level = level;
+        return this;
+    }
+
+    @Override
+    public Jospec.Level getLevel() {
+        return level;
     }
 
     public String getName() {
@@ -52,30 +57,30 @@ public class FeatureModel implements Jospec.Feature {
 
     private String actor;
 
-    public FeatureModel(String name) {
-        this.name = name;
+    public Collection<String> getTags() {
+        return tags;
     }
 
     @Override
-    public Jospec.Feature actor(String actor) {
+    public Jospec actor(String actor) {
         this.actor = actor;
         return this;
     }
 
     @Override
-    public Jospec.Feature note(String input) {
+    public Jospec note(String input) {
         notes.add(input);
         return this;
     }
 
     @Override
-    public Jospec.Feature tag(String tag) {
+    public Jospec tag(String tag) {
         tags.add(tag);
         return this;
     }
 
     @Override
-    public Jospec.Feature purpose(String reason) {
+    public Jospec purpose(String reason) {
         purpose = reason;
         return this;
     }
@@ -85,19 +90,19 @@ public class FeatureModel implements Jospec.Feature {
     }
 
     @Override
-    public Jospec.Feature done(Class<?> clazz) {
+    public Jospec done(Class<?> clazz) {
         done = clazz;
         return this;
     }
 
     @Override
-    public Jospec.Feature done(String description) {
+    public Jospec done(String description) {
         done = description;
         return this;
     }
 
     @Override
-    public Jospec.Feature done() {
+    public Jospec done() {
         done = true;
         return this;
     }
@@ -108,7 +113,7 @@ public class FeatureModel implements Jospec.Feature {
     }
 
     @Override
-    public Jospec.Feature property(String key, Object value) {
+    public Jospec property(String key, Object value) {
         properties.put(key, value);
         return this;
     }
@@ -119,18 +124,21 @@ public class FeatureModel implements Jospec.Feature {
     }
 
     @Override
-    public Jospec.Feature contains(Jospec.Feature... inFeatures) {
-        for (Jospec.Feature it : inFeatures) {
-            features.add(it);
+    public Jospec contains(Jospec... inFeatures) {
+        for (Jospec it : inFeatures) {
+            specs.add(it);
         }
         return this;
     }
 
-    @Override
-    public Jospec.Feature contains(Jospec.Attribute... inAttributes) {
-        for (Jospec.Attribute it : inAttributes) {
-            attributes.add(it);
-        }
+    public Jospec merge(J annotation) {
+        name = annotation.name();
+        level = annotation.level();
+        purpose = annotation.purpose();
+        notes = Arrays.asList(annotation.notes());
+        tags = Arrays.asList(annotation.tags());
+        constraints = Arrays.asList(annotation.constraints());
+        done = annotation.done();
         return this;
     }
 }
