@@ -5,37 +5,22 @@ import com.opentangerine.jospec.annotation.J;
 import java.util.Collection;
 
 public interface Jospec {
-    String NAME = "OSRSL";
+    String NAME = "Jospec";
 
-    interface All extends Provider, Specification, Feature {}
-
-    interface Provider {
-        void spec(Specification spec);
-    }
+    interface All extends Specification, Feature {}
 
     interface Specification {
-        Project project();
-        Module module(String name);
         Collection<Module> getModules();
-        Feature feature(String name);
-        Attribute attribute(String name);
     }
 
     @J.Module(name = NAME)
     @J.Feature(name = "group features into modules")
-    interface Module {
-        String getName();
-        Module description(String description);
-        String getDescription();
-        Module contains(Feature... features);
-        Collection<Feature> getFeatures();
+    interface Module extends Feature {
     }
 
     @J.Module(name = NAME)
     @J.Feature(name = "store project global informations")
-    interface Project {
-        Project name(String name);
-        String getName();
+    interface Project extends Feature {
     }
 
     @J.Module(name = NAME)
@@ -47,7 +32,7 @@ public interface Jospec {
         String getName();
 
         @J.Attribute(name="actor", description="specify who is interested with this particular feature")
-        Feature actor(String who);
+        Feature actor(String actor);
         String getActor();
 
         @J.Attribute(name="notes", description="additional notes strictly related to this feature")
@@ -58,7 +43,7 @@ public interface Jospec {
         Feature tag(String tag);
         Collection<String> getTags();
 
-        @J.Attribute(name="reason", description="explain purpose of this feature")
+        @J.Attribute(name="purpose", description="explain purpose of this feature")
         Feature purpose(String what);
         String getPurpose();
 

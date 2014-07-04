@@ -8,24 +8,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SpecificationModel implements Jospec.Specification {
-    private Jospec.Project project = new ProjectModel();
+    private static SpecificationModel instance = new SpecificationModel();
+    private Jospec.Project project;
     private Map<String, Jospec.Module> mods = new HashMap<>();
-    private Collection<Jospec.Feature> features = new ArrayList<>();
-    private String description;
 
-    @Override
-    public Jospec.Project project() {
-        return project;
+    public static SpecificationModel getInstance() {
+        return instance;
     }
 
-    @Override
-    public Jospec.Module module(String name) {
-        Jospec.Module module = mods.get(name);
-        if(module == null) {
-            module = new ModuleModel(name);
-            mods.put(name, module);
+    public static Jospec.Project project(String name) {
+        if(getInstance().project != null) {
+            if(getInstance().project.getName().equalsIgnoreCase(name)) {
+                throw new IllegalArgumentException("Found another project in codebase scope " + name + ", previous: " + getInstance().project.getName() + ". Multiple projects are not supported.");
+            }
+            return getInstance().project;
         }
-        return module;
+        getInstance().project = new ProjectModel(name);
+        return null;
     }
 
     @Override
@@ -33,14 +32,20 @@ public class SpecificationModel implements Jospec.Specification {
         return mods.values();
     }
 
-    @Override
-    public Jospec.Feature feature(String input) {
+    public static Jospec.Module module(String name) {
+        Jospec.Module module = getInstance().mods.get(name);
+        if(module == null) {
+            module = new ModuleModel(name);
+            getInstance().mods.put(name, module);
+        }
+        return module;
+    }
+
+    public static Jospec.Feature feature(String input) {
         return new FeatureModel(input);
     }
 
-    @Override
-    public Jospec.Attribute attribute(String name) {
+    public static Jospec.Attribute attribute(String name) {
         return new AttributeModel(name);
     }
-
 }

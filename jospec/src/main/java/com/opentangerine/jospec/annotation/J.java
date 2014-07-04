@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 public @interface J {
     static String NOT_SET = "";
 
-    @Target(ElementType.TYPE)
+    @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Provider {
     }

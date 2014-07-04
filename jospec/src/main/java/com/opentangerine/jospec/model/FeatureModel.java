@@ -46,10 +46,6 @@ public class FeatureModel implements Jospec.Feature {
         return notes;
     }
 
-    public String getPurpose() {
-        return purpose;
-    }
-
     public String getName() {
         return name;
     }
@@ -60,14 +56,9 @@ public class FeatureModel implements Jospec.Feature {
         this.name = name;
     }
 
-    public FeatureModel(J.Feature feature) {
-        name = feature.name();
-        purpose = feature.purpose();
-    }
-
     @Override
     public Jospec.Feature actor(String actor) {
-        actor = actor;
+        this.actor = actor;
         return this;
     }
 
@@ -87,6 +78,10 @@ public class FeatureModel implements Jospec.Feature {
     public Jospec.Feature purpose(String reason) {
         purpose = reason;
         return this;
+    }
+
+    public String getPurpose() {
+        return purpose;
     }
 
     @Override

@@ -6,42 +6,14 @@ import com.opentangerine.jospec.annotation.J;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ModuleModel implements Jospec.Module {
-    private String name;
-    private String description;
-    private Collection<Jospec.Feature> features = new ArrayList<>();
+public class ModuleModel extends FeatureModel implements Jospec.Module {
 
     public ModuleModel(String name) {
-        this.name = name;
+        super(name);
     }
 
-    public ModuleModel(J.Module module) {
-        name = module.name();
-    }
-
-    @Override
-    public Jospec.Module description(String input) {
-        description = input;
-        return this;
-    }
-
-    @Override
-    public Jospec.Module contains(Jospec.Feature... inFeatures) {
-        for (Jospec.Feature inFeature : inFeatures) {
-            features.add(inFeature);
-        }
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Collection<Jospec.Feature> getFeatures() {
-        return features;
+    public static ModuleModel from(J.Module module) {
+        ModuleModel model = new ModuleModel(module.name());
+        return model;
     }
 }
